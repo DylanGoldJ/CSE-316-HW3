@@ -116,7 +116,7 @@ export const useGlobalStore = () => {
         async function asyncChangeListName(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
-                let playlist = response.data.playist;
+                let playlist = response.data.playlist;
                 playlist.name = newName;
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
@@ -154,16 +154,25 @@ export const useGlobalStore = () => {
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = function () {
         async function asyncLoadIdNamePairs() {
-            const response = await api.getPlaylistPairs();
-            if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
+            //This code may break when we have an empty playlists. try and catch for this
+            try{
+                const response = await api.getPlaylistPairs();
+                if (response.data.success) {
+                    let pairsArray = response.data.idNamePairs;
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: pairsArray
+                    });
+                }
+                else {
+                    console.log("API FAILED TO GET THE LIST PAIRS");
+                }
+            }
+            catch(e) { //If above does not work(due to empty) try again with an actually empty.
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                    payload: pairsArray
+                    payload: []
                 });
-            }
-            else {
-                console.log("API FAILED TO GET THE LIST PAIRS");
             }
         }
         asyncLoadIdNamePairs();
@@ -203,7 +212,25 @@ export const useGlobalStore = () => {
             payload: null
         });
     }
-
+// Our buttons will communite with the store which will do the below aswell
+// as trigger api.index.js with api.createSong 
+    store.createNewList = function(){
+        //Making it async lets us use the await and such properly.
+        async function asyncCreateNewList(){
+            //define and create a new playlist with await api.createSong
+            let newPlaylist = {name: "Untitled-" + store.newListCounter, songs:[]};
+            let response = await api.createPlaylist(newPlaylist);
+            
+            if (response.data.success){
+                storeReducer({
+                    type: GlobalStoreActionType.CREATE_NEW_LIST,
+                    payload: response.data.playlist
+                });
+                store.history.push("/playlist/"+ response.data.playlist._id);
+            }
+        }
+        asyncCreateNewList();
+    }
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };
 }
