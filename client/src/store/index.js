@@ -18,6 +18,8 @@ export const GlobalStoreActionType = {
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
+    MARK_LIST_FOR_DELETION:"MARK_LIST_FOR_DELETION",//Added cause it was missing?
+
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -31,7 +33,8 @@ export const useGlobalStore = () => {
         idNamePairs: [],
         currentList: null,
         newListCounter: 0,
-        listNameActive: false
+        listNameActive: false,
+        markDeletePlaylist: null
     });
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
@@ -45,7 +48,8 @@ export const useGlobalStore = () => {
                     idNamePairs: payload.idNamePairs,
                     currentList: payload.playlist,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    markDeletePlaylist: store.markDeletePlaylist
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -54,7 +58,8 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: null,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    markDeletePlaylist: store.markDeletePlaylist
                 })
             }
             // CREATE A NEW LIST
@@ -63,7 +68,8 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     newListCounter: store.newListCounter + 1,
-                    listNameActive: false
+                    listNameActive: false,
+                    markDeletePlaylist: store.markDeletePlaylist
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -72,16 +78,18 @@ export const useGlobalStore = () => {
                     idNamePairs: payload,
                     currentList: null,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    markDeletePlaylist: store.markDeletePlaylist
                 });
             }
             // PREPARE TO DELETE A LIST
             case GlobalStoreActionType.MARK_LIST_FOR_DELETION: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
-                    currentList: null,
+                    currentList: store.currentList,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    markDeletePlaylist: payload
                 });
             }
             // UPDATE A LIST
@@ -90,7 +98,8 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    markDeletePlaylist: store.markDeletePlaylist
                 });
             }
             // START EDITING A LIST NAME
@@ -99,7 +108,8 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     newListCounter: store.newListCounter,
-                    listNameActive: true
+                    listNameActive: true,
+                    markDeletePlaylist: store.markDeletePlaylist
                 });
             }
             default:
@@ -216,7 +226,7 @@ export const useGlobalStore = () => {
 // as trigger api.index.js with api.createSong 
     store.createNewList = function(){
         //Making it async lets us use the await and such properly.
-        async function asyncCreateNewList(){
+        async function asyncCreateNewPlaylist(){
             //define and create a new playlist with await api.createSong
             let newPlaylist = {name: "Untitled-" + store.newListCounter, songs:[]};
             let response = await api.createPlaylist(newPlaylist);
@@ -226,11 +236,57 @@ export const useGlobalStore = () => {
                     type: GlobalStoreActionType.CREATE_NEW_LIST,
                     payload: response.data.playlist
                 });
-                store.history.push("/playlist/"+ response.data.playlist._id);
+                store.history.push("/playlist/"+ response.data.playlist.id);
             }
         }
-        asyncCreateNewList();
+        asyncCreateNewPlaylist();
     }
+
+    //DELETING:
+    // Mark for deletion.
+    store.marksDeletePlaylist = function(idNamePair){
+        storeReducer({
+            type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
+            payload: idNamePair
+        })
+        store.showDeleteModal()
+    }
+
+    store.deleteModalCancel = function(){
+        store.hideDeleteModal()
+    }
+    //DELETING MARKED SONG
+    store.deleteModalConfirm = function(){
+        let markedId = store.markDeletePlaylist._id
+        async function asyncDeleteModalConfirm(id){
+            //define and create a new playlist with await api.createSong
+
+            let response = await api.deletePlaylist(id);
+            if (response.data.success){
+                // storeReducer({
+                //     type: GlobalStoreActionType.Cx,
+                //     payload: response.data.playlist
+                // });
+            }
+            store.loadIdNamePairs()
+        }
+        asyncDeleteModalConfirm(markedId);
+        store.hideDeleteModal()
+    }
+
+
+    store.showDeleteModal = function() {
+        let modal = document.getElementById("delete-list-modal")
+        modal.classList.add("is-visible")
+    //TODO TOGGLEMODALON - DELETE
+    }
+
+    store.hideDeleteModal = function() {
+        let modal = document.getElementById("delete-list-modal")
+        modal.classList.remove("is-visible")
+    //TODO TOGGLEMODALOFF - DELETE
+    }
+
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };
 }
