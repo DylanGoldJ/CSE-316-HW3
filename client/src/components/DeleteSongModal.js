@@ -4,10 +4,14 @@ import { GlobalStoreContext } from '../store'
 function DeleteSongModal() {
     const { store } = useContext(GlobalStoreContext);
     //const history = useHistory();
-    // let markedName = ""
-    // if(store.markDeletePlaylist){
-    //     markedName = store.markDeletePlaylist.name
-    // }
+    let markedName = ""
+    if(store.markedDeleteSong != null){
+        if(store.currentList){
+            if(store.currentList.songs[store.markedDeleteSong]){
+                markedName = store.currentList.songs[store.markedDeleteSong].title
+            }
+        }
+    }
 
     function handleDeleteCancelClick(event){
         event.stopPropagation()
@@ -30,7 +34,7 @@ function DeleteSongModal() {
                     </div>
                     <div class="modal-center">
                         <div class="modal-center-content">
-                        Are you sure you wish to permanently remove <b></b> from the playlist?
+                        Are you sure you wish to permanently remove <b>{markedName}</b> from the playlist?
                         </div>
                     </div>
                     <div class="modal-south">

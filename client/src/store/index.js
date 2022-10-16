@@ -23,7 +23,7 @@ export const GlobalStoreActionType = {
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     MARK_LIST_FOR_DELETION:"MARK_LIST_FOR_DELETION",//Added cause it was missing?
-
+    MARK_SONG_FOR_DELETION:"MARK_SONG_FOR_DELETION", //Added
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -122,6 +122,17 @@ export const useGlobalStore = () => {
                     listNameActive: true,
                     markDeletePlaylist: store.markDeletePlaylist,
                     markedDeleteSong: store.markedDeleteSong
+                });
+            }
+            //For marking a song to be deleted(by index)
+            case GlobalStoreActionType.MARK_SONG_FOR_DELETION: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    listNameActive: true,
+                    markDeletePlaylist: store.markDeletePlaylist,
+                    markedDeleteSong: payload
                 });
             }
             default:
@@ -330,10 +341,49 @@ export const useGlobalStore = () => {
     //DELETING SONG:
 
     //Marking song for deletion.
-    store.markDeleteSong = function(){
-        store.showDeleteSongModal()
+    store.markDeleteSong = function(id){
 
+        storeReducer({
+            type: GlobalStoreActionType.MARK_SONG_FOR_DELETION,
+            payload: id
+        });
+
+        store.showDeleteSongModal() //Show modal when we mark
     }
+
+    store.deleteSongByIndex = function(index){ //This is do, needs index in
+        let playlist = store.currentList;
+        let deletedSong = playlist.songs[index] //Save song
+        playlist.songs.splice(index, 1); //Get rid of song at that index
+        
+        store.changeSongs(playlist._id, playlist.songs)
+
+        store.markDeleteSong(null)//Reset the marked song to none once its gone
+        store.hideDeleteSongModal()
+        return deletedSong; //Return deleted song
+        
+    }
+
+    store.addSongSpecific = function(song, index){
+        let playlist = store.currentList;        
+        playlist.songs.splice(index, 0, song) //put given song to list at the index
+        store.changeSongs(playlist._id, playlist.songs)
+    }
+
+    store.addDeleteSongTransaction = function(id){
+        let transaction = new DeleteSong_Transaction(store, id);
+        tps.addTransaction(transaction);
+    }
+
+    store.deleteSongModalCancel = function(){
+        store.hideDeleteSongModal()
+    }
+
+    store.deleteSongModalConfirm = function(){
+        store.hideDeleteSongModal()
+        store.addDeleteSongTransaction(store.markedDeleteSong)
+    }
+    
     store.showDeleteSongModal = function() {
         let modal = document.getElementById("delete-song-modal")
         modal.classList.add("is-visible")
@@ -345,12 +395,6 @@ export const useGlobalStore = () => {
         modal.classList.remove("is-visible")
     //TODO TOGGLEMODALOFF - DELETE
     }
-
-
-    store.addDeleteSongTransaction = function(){
-        let transaction = new DeleteSong_Transaction(store);
-        tps.addTransaction(transaction);
-    }    
 
 
     //This takes a new song array and changes it in the database.
