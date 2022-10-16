@@ -48,6 +48,18 @@ getPlaylistById = async (req, res) => {
         return res.status(200).json({ success: true, playlist: list })
     }).catch(err => console.log(err))
 }
+updatePlaylistById = async (req, res) => {
+    //Update how create updates but specify the name with updateOne
+    const body = req.body;
+    const newPlaylist = new Playlist(body);
+    await Playlist.updateOne({ _id: req.params.id} , {$set: {name: newPlaylist.name }}, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        return res.status(200).json({ success: true, playlist: list })
+    }).catch(err => console.log(err))
+}
 
 deletePlaylist= async (req, res) => {
     await Playlist.findOneAndDelete({ _id: req.params.id }, (err, list) => {
@@ -104,5 +116,6 @@ module.exports = {
     getPlaylists,
     getPlaylistPairs,
     getPlaylistById,
-    deletePlaylist
+    deletePlaylist,
+    updatePlaylistById
 }
