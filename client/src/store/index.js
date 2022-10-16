@@ -3,7 +3,7 @@ import jsTPS from '../common/jsTPS'
 import api from '../api'
 //Transaction Imports:
 import AddSong_Transaction from '../transactions/AddSong_Transaction.js';
-
+import DeleteSong_Transaction from '../transactions/DeleteSong_Transaction.js';
 
 export const GlobalStoreContext = createContext({});
 /*
@@ -38,7 +38,8 @@ export const useGlobalStore = () => {
         currentList: null,
         newListCounter: 0,
         listNameActive: false,
-        markDeletePlaylist: null
+        markDeletePlaylist: null,
+        markedDeleteSong: null
     });
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
@@ -53,7 +54,8 @@ export const useGlobalStore = () => {
                     currentList: payload.playlist,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
-                    markDeletePlaylist: store.markDeletePlaylist
+                    markDeletePlaylist: store.markDeletePlaylist,
+                    markedDeleteSong: store.markedDeleteSong
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -63,7 +65,8 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
-                    markDeletePlaylist: store.markDeletePlaylist
+                    markDeletePlaylist: store.markDeletePlaylist,
+                    markedDeleteSong: store.markedDeleteSong
                 })
             }
             // CREATE A NEW LIST
@@ -73,7 +76,8 @@ export const useGlobalStore = () => {
                     currentList: payload,
                     newListCounter: store.newListCounter + 1,
                     listNameActive: false,
-                    markDeletePlaylist: store.markDeletePlaylist
+                    markDeletePlaylist: store.markDeletePlaylist,
+                    markedDeleteSong: store.markedDeleteSong
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -83,7 +87,8 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
-                    markDeletePlaylist: store.markDeletePlaylist
+                    markDeletePlaylist: store.markDeletePlaylist,
+                    markedDeleteSong: store.markedDeleteSong
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -93,7 +98,8 @@ export const useGlobalStore = () => {
                     currentList: store.currentList,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
-                    markDeletePlaylist: payload
+                    markDeletePlaylist: payload,
+                    markedDeleteSong: store.markedDeleteSong
                 });
             }
             // UPDATE A LIST
@@ -103,7 +109,8 @@ export const useGlobalStore = () => {
                     currentList: payload,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
-                    markDeletePlaylist: store.markDeletePlaylist
+                    markDeletePlaylist: store.markDeletePlaylist,
+                    markedDeleteSong: store.markedDeleteSong
                 });
             }
             // START EDITING A LIST NAME
@@ -113,7 +120,8 @@ export const useGlobalStore = () => {
                     currentList: payload,
                     newListCounter: store.newListCounter,
                     listNameActive: true,
-                    markDeletePlaylist: store.markDeletePlaylist
+                    markDeletePlaylist: store.markDeletePlaylist,
+                    markedDeleteSong: store.markedDeleteSong
                 });
             }
             default:
@@ -318,6 +326,31 @@ export const useGlobalStore = () => {
             store.changeSongs(playlist._id, playlist.songs)
         }
     }
+
+    //DELETING SONG:
+
+    //Marking song for deletion.
+    store.markDeleteSong = function(){
+        store.showDeleteSongModal()
+
+    }
+    store.showDeleteSongModal = function() {
+        let modal = document.getElementById("delete-song-modal")
+        modal.classList.add("is-visible")
+    //TODO TOGGLEMODALON - DELETE
+    }
+
+    store.hideDeleteSongModal = function() {
+        let modal = document.getElementById("delete-song-modal")
+        modal.classList.remove("is-visible")
+    //TODO TOGGLEMODALOFF - DELETE
+    }
+
+
+    store.addDeleteSongTransaction = function(){
+        let transaction = new DeleteSong_Transaction(store);
+        tps.addTransaction(transaction);
+    }    
 
 
     //This takes a new song array and changes it in the database.
