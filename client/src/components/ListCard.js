@@ -32,6 +32,7 @@ function ListCard(props) {
     }
 
     function toggleEdit() {
+        setText(idNamePair.name) //added so by default its the default name
         let newActive = !editActive;
         if (newActive) {
             store.setIsListNameEditActive();

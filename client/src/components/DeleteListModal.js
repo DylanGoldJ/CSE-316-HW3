@@ -1,9 +1,9 @@
 import { useContext } from 'react'
 import { GlobalStoreContext } from '../store'
-import { useHistory } from 'react-router-dom'
+//import { useHistory } from 'react-router-dom'
 function DeleteListModal() {
     const { store } = useContext(GlobalStoreContext);
-    const history = useHistory();
+    //const history = useHistory();
     let markedName = ""
     if(store.markDeletePlaylist){
         markedName = store.markDeletePlaylist.name

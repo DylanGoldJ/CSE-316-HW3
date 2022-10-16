@@ -27,6 +27,11 @@ function EditToolbar() {
     if (store.isListNameEditActive) {
         editStatus = true;
     }
+    //Handle add Song.
+    function handleAdd() {
+        store.addAddSongTransaction()
+    }
+
     return (
         <span id="edit-toolbar">
             <input
@@ -35,6 +40,7 @@ function EditToolbar() {
                 disabled={editStatus}
                 value="+"
                 className={enabledButtonClass}
+                onClick={handleAdd}
             />
             <input
                 type="button"

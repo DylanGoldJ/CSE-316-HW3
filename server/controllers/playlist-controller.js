@@ -52,7 +52,7 @@ updatePlaylistById = async (req, res) => {
     //Update how create updates but specify the name with updateOne
     const body = req.body;
     const newPlaylist = new Playlist(body);
-    await Playlist.updateOne({ _id: req.params.id} , {$set: {name: newPlaylist.name }}, (err, list) => {
+    await Playlist.updateOne({ _id: req.params.id} , {$set: {name: newPlaylist.name, songs:newPlaylist.songs}}, (err, list) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }

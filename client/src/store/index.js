@@ -1,6 +1,10 @@
 import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
 import api from '../api'
+//Transaction Imports:
+import AddSong_Transaction from '../transactions/AddSong_Transaction.js';
+
+
 export const GlobalStoreContext = createContext({});
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -286,6 +290,68 @@ export const useGlobalStore = () => {
         modal.classList.remove("is-visible")
     //TODO TOGGLEMODALOFF - DELETE
     }
+
+    //ADDING songtransaction.
+    store.addAddSongTransaction = function(){
+        let transaction = new AddSong_Transaction(store);
+        tps.addTransaction(transaction);
+    }
+
+    //ADDING SONG, called from transaction
+    store.addSongDefault = function(){
+        let playlist = store.currentList
+        if (playlist) {
+            let newSong = {
+                title : "Untitled",
+                artist : "Unknown",
+                youTubeId : "dQw4w9WgXcQ",
+                }
+            playlist.songs.push(newSong)
+            store.changeSongs(playlist._id, playlist.songs)
+        }
+    }
+
+    store.deleteLastSong = function(){
+        let playlist = store.currentList
+        if (playlist) {
+            playlist.songs.pop()
+            store.changeSongs(playlist._id, playlist.songs)
+        }
+    }
+
+
+    //This takes a new song array and changes it in the database.
+    store.changeSongs = function (id, songsArr) {
+            // GET THE LIST
+            async function asyncChangeSongs(id) {
+                let response = await api.getPlaylistById(id);
+                if (response.data.success) {
+                    let playlist = response.data.playlist;
+                    playlist.songs = songsArr
+                    async function updateList(playlist) {
+                        response = await api.updatePlaylistById(playlist._id, playlist);
+                        if (response.data.success) {
+                            async function getListPairs(playlist) {
+                                response = await api.getPlaylistPairs();
+                                if (response.data.success) {
+                                    let pairsArray = response.data.idNamePairs;
+                                    storeReducer({
+                                        type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                                        payload: {
+                                            idNamePairs: pairsArray,
+                                            playlist: playlist
+                                        }
+                                    });
+                                }
+                            }
+                            getListPairs(playlist);
+                        }
+                    }
+                    updateList(playlist);
+                }
+            }
+            asyncChangeSongs(id);
+        }
 
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };
