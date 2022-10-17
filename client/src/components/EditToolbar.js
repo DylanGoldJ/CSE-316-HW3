@@ -18,18 +18,18 @@ function EditToolbar() {
     let redoClass = "playlister-button";
     let closeClass = "playlister-button";
 
-    let canAddSong = ((store.currentList === null) && (!store.modalActive));
+    let canAddSong = ((store.currentList === null) || (store.modalActive));
     if (canAddSong) addSongClass += "-disabled";
 
 
-    let canUndo = !(store.storeTps.hasTransactionToUndo())
+    let canUndo = !(store.storeTps.hasTransactionToUndo() && !(store.modalActive));
     if (canUndo) undoClass += "-disabled";
 
-    let canRedo = !(store.storeTps.hasTransactionToRedo())
+    let canRedo = !(store.storeTps.hasTransactionToRedo()  && !(store.modalActive));
     if (canRedo) redoClass += "-disabled";
 
     
-    let canClose= (store.currentList === null)
+    let canClose= ((store.currentList === null)|| (store.modalActive));
     if (canClose) closeClass += "-disabled";
 
     function handleUndo() {

@@ -539,6 +539,10 @@ export const useGlobalStore = () => {
     //TODO TOGGLEMODALOFF - DELETE
     }
 
+    store.modalActiveCheck = function(){
+        return store.modalActive
+    }
+
 
     store.modalSetActive = function(){
         storeReducer({
