@@ -386,15 +386,11 @@ export const useGlobalStore = () => {
     store.showDeleteModal = function() {
         let modal = document.getElementById("delete-list-modal")
         modal.classList.add("is-visible")
-        store.modalSetActive()
-    //TODO TOGGLEMODALON - DELETE
     }
 
     store.hideDeleteModal = function() {
         let modal = document.getElementById("delete-list-modal")
         modal.classList.remove("is-visible")
-        store.modalSetUnactive()
-    //TODO TOGGLEMODALOFF - DELETE
     }
 
     //ADDING songtransaction.
@@ -473,14 +469,14 @@ export const useGlobalStore = () => {
     store.showDeleteSongModal = function() {
         let modal = document.getElementById("delete-song-modal")
         modal.classList.add("is-visible")
-        store.modalSetActive()
+        //store.modalSetActive()
     //TODO TOGGLEMODALON - DELETE
     }
 
     store.hideDeleteSongModal = function() {
         let modal = document.getElementById("delete-song-modal")
         modal.classList.remove("is-visible")
-        store.modalSetUnactive()
+        //store.modalSetUnactive()
     //TODO TOGGLEMODALOFF - DELETE
     }
 
@@ -528,21 +524,16 @@ export const useGlobalStore = () => {
 
         let modal = document.getElementById("edit-song-modal")
         modal.classList.add("is-visible")
-        store.modalSetActive()
+        //store.modalSetActive()
     //TODO TOGGLEMODALON - DELETE
     }
 
     store.hideEditSongModal = function() {
         let modal = document.getElementById("edit-song-modal")
         modal.classList.remove("is-visible")
-        store.modalSetUnactive()
+        //store.modalSetUnactive()
     //TODO TOGGLEMODALOFF - DELETE
     }
-
-    store.modalActiveCheck = function(){
-        return store.modalActive
-    }
-
 
     store.modalSetActive = function(){
         storeReducer({
