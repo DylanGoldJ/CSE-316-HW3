@@ -5,6 +5,7 @@ import api from '../api'
 import AddSong_Transaction from '../transactions/AddSong_Transaction.js';
 import DeleteSong_Transaction from '../transactions/DeleteSong_Transaction.js';
 import EditSong_Transaction from '../transactions/EditSong_Transaction.js';
+import MoveSong_Transaction from '../transactions/MoveSong_Transaction.js';
 export const GlobalStoreContext = createContext({});
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -26,7 +27,8 @@ export const GlobalStoreActionType = {
     MARK_SONG_FOR_DELETION:"MARK_SONG_FOR_DELETION", //Added
     MARK_SONG_FOR_EDIT:"MARK_SONG_FOR_EDIT",//Added
     NEW_SONG_FOR_EDIT:"NEW_SONG_FOR_EDIT",
-    SET_MODAL_ACTIVE:"SET_MODAL_ACTIVE"
+    SET_MODAL_ACTIVE:"SET_MODAL_ACTIVE",
+    SET_MOVING_STATES: "SET_MOVING_STATES",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -46,7 +48,9 @@ export const useGlobalStore = () => {
         markedEditSong:null,
         newSongForEdit:null,
         storeTps: tps,
-        modalActive: false
+        modalActive: false,
+        isDragging: false,
+        draggedTo: false
     });
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
@@ -66,7 +70,10 @@ export const useGlobalStore = () => {
                     markedEditSong: store.markedEditSong,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
-                    modalActive: store.modalActive
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
+
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -81,7 +88,9 @@ export const useGlobalStore = () => {
                     markedEditSong: store.markedEditSong,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
-                    modalActive: store.modalActive
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
                 })
             }
             // CREATE A NEW LIST
@@ -96,7 +105,9 @@ export const useGlobalStore = () => {
                     markedEditSong: store.markedEditSong,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
-                    modalActive: store.modalActive
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -111,7 +122,9 @@ export const useGlobalStore = () => {
                     markedEditSong: store.markedEditSong,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
-                    modalActive: store.modalActive
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -126,7 +139,9 @@ export const useGlobalStore = () => {
                     markedEditSong: store.markedEditSong,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
-                    modalActive: store.modalActive
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
                 });
             }
             // UPDATE A LIST
@@ -141,7 +156,9 @@ export const useGlobalStore = () => {
                     markedEditSong: store.markedEditSong,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
-                    modalActive: store.modalActive
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
                 });
             }
             // START EDITING A LIST NAME
@@ -156,7 +173,9 @@ export const useGlobalStore = () => {
                     markedEditSong: store.markedEditSong,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
-                    modalActive: store.modalActive
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
                 });
             }
             //For marking a song to be deleted(by index)
@@ -171,7 +190,9 @@ export const useGlobalStore = () => {
                     markedEditSong: store.markedEditSong,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
-                    modalActive: store.modalActive
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
                 });
             }
             //Marking a song to be editted(by index)
@@ -186,7 +207,9 @@ export const useGlobalStore = () => {
                     markedEditSong: payload,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
-                    modalActive: store.modalActive
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
                 });
             }
 
@@ -201,7 +224,9 @@ export const useGlobalStore = () => {
                     markedEditSong: store.markedEditSong,
                     newSongForEdit: payload,
                     storeTps : store.storeTps,
-                    modalActive: store.modalActive
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
                 });
             }
             case GlobalStoreActionType.SET_MODAL_ACTIVE: {
@@ -215,7 +240,25 @@ export const useGlobalStore = () => {
                     markedEditSong: store.markedEditSong,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
-                    modalActive: payload
+                    modalActive: payload,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
+                });
+            }
+            case GlobalStoreActionType.SET_MOVING_STATES: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    markDeletePlaylist: store.markDeletePlaylist,
+                    markedDeleteSong: store.markedDeleteSong,
+                    markedEditSong: store.markedEditSong,
+                    newSongForEdit: store.newSongForEdit,
+                    storeTps : store.storeTps,
+                    modalActive: store.modalActive,
+                    isDragging: payload.isDrag,
+                    draggedTo: payload.dragTo
                 });
             }
 
@@ -419,6 +462,29 @@ export const useGlobalStore = () => {
             playlist.songs.pop()
             store.changeSongs(playlist._id, playlist.songs)
         }
+    }
+    //MOVING SONG
+    store.setMoves = function(isDragging, draggedTo){
+        let tempObj = {
+            isDrag : isDragging,
+            dragTo : draggedTo
+        }
+        storeReducer({
+            type: GlobalStoreActionType.MARK_SONG_FOR_DELETION,
+            payload: tempObj
+        });
+    }
+    store.addMoveSongTransaction = function(oldIndex, newIndex){
+        let transaction = new MoveSong_Transaction(store, oldIndex, newIndex);
+        tps.addTransaction(transaction);
+    }
+
+    store.moveSong = function(start, end) {
+        let list = store.currentList;
+        let tempSong = list.songs[start]
+        list.songs[start] = list.songs[end]
+        list.songs[end] = tempSong
+        store.changeSongs(list._id, list.songs)
     }
 
     //DELETING SONG:
