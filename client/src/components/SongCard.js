@@ -8,6 +8,11 @@ function SongCard(props) {
         event.stopPropagation()
         store.markDeleteSong(index)
     }
+    function handleDoubleClick(event){
+        event.stopPropagation()
+        store.markEditSong(index)
+        store.showEditSongModal(index) //Show modal when we mark
+    }
 
     const { song, index } = props;
     let cardClass = "list-card unselected-list-card";
@@ -16,6 +21,7 @@ function SongCard(props) {
             key={index}
             id={'song-' + index + '-card'}
             className={cardClass}
+            onDoubleClick={handleDoubleClick}
         >
             {index + 1}.
             <a
