@@ -11,7 +11,26 @@ function EditToolbar() {
     const { store } = useContext(GlobalStoreContext);
     const history = useHistory();
 
-    let enabledButtonClass = "playlister-button";
+    let enabledButtonClass = "playlister-button";//Original
+    
+    let addSongClass = "playlister-button";
+    let undoClass = "playlister-button";
+    let redoClass = "playlister-button";
+    let closeClass = "playlister-button";
+
+    let canAddSong = ((store.currentList === null) && (!store.modalActive));
+    if (canAddSong) addSongClass += "-disabled";
+
+
+    let canUndo = !(store.storeTps.hasTransactionToUndo())
+    if (canUndo) undoClass += "-disabled";
+
+    let canRedo = !(store.storeTps.hasTransactionToRedo())
+    if (canRedo) redoClass += "-disabled";
+
+    
+    let canClose= (store.currentList === null)
+    if (canClose) closeClass += "-disabled";
 
     function handleUndo() {
         store.undo();
@@ -23,10 +42,13 @@ function EditToolbar() {
         history.push("/");
         store.closeCurrentList();
     }
-    let editStatus = false;
-    if (store.isListNameEditActive) {
-        editStatus = true;
-    }
+    // let editStatus = false;
+    // if (store.isListNameEditActive) {
+    //     editStatus = true;
+    // }
+
+
+    
     //Handle add Song.
     function handleAdd() {
         store.addAddSongTransaction()
@@ -37,33 +59,33 @@ function EditToolbar() {
             <input
                 type="button"
                 id='add-song-button'
-                disabled={editStatus}
+                disabled={canAddSong}
                 value="+"
-                className={enabledButtonClass}
+                className={addSongClass}
                 onClick={handleAdd}
             />
             <input
                 type="button"
                 id='undo-button'
-                disabled={editStatus}
+                disabled={canUndo}
                 value="⟲"
-                className={enabledButtonClass}
+                className={undoClass}
                 onClick={handleUndo}
             />
             <input
                 type="button"
                 id='redo-button'
-                disabled={editStatus}
+                disabled={canRedo}
                 value="⟳"
-                className={enabledButtonClass}
+                className={redoClass}
                 onClick={handleRedo}
             />
             <input
                 type="button"
                 id='close-button'
-                disabled={editStatus}
+                disabled={canClose}
                 value="&#x2715;"
-                className={enabledButtonClass}
+                className={closeClass}
                 onClick={handleClose}
             />
         </span>);
