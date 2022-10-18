@@ -383,6 +383,16 @@ export const useGlobalStore = () => {
         tps.doTransaction();
     }
 
+    // store.checkAndUndo = function(){
+    //     if (!(store.storeTps.hasTransactionToUndo() && (!store.getModalState())))
+    //     store.undo()
+    // }
+
+    // store.checkAndRedo = function(){
+    //     if (!(store.storeTps.hasTransactionToRedo() && (!store.getModalState())))
+    //     store.redo()
+    // }
+
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
     store.setIsListNameEditActive = function () {
         storeReducer({

@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useCallback, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import SongCard from './SongCard.js'
 import { GlobalStoreContext } from '../store'
@@ -11,6 +11,46 @@ import { GlobalStoreContext } from '../store'
 function PlaylistCards() {
     const { store } = useContext(GlobalStoreContext);
     store.history = useHistory();
+
+
+    const handleKeyPress = useCallback((event) => {
+        if ((event.ctrlKey && event.key === 'z') || (event.ctrlKey && event.key === 'Z') ) {
+            if(store.storeTps.hasTransactionToUndo() && (!store.getModalState())) {
+                store.undo()
+            }
+        }
+
+            if((event.ctrlKey && event.key === 'y') || (event.ctrlKey && event.key === 'Y')) {
+                if (store.storeTps.hasTransactionToRedo() && (!store.getModalState())) {
+                    store.redo()
+                }
+            }
+      }, []);
+    
+      useEffect(() => {
+        // attach the event listener
+        document.addEventListener('keydown', handleKeyPress);
+    
+        // remove the event listener
+        return () => {
+          document.removeEventListener('keydown', handleKeyPress);
+        };
+      }, [handleKeyPress]);
+
+
+    // document.addEventListener('keydown', function(event) {
+    //     if ((event.ctrlKey && event.key === 'z') || (event.ctrlKey && event.key === 'Z') ) {
+    //         if(store.storeTps.hasTransactionToUndo() && (!store.getModalState())) {
+    //             store.undo()
+    //         }
+    //     }
+
+    //         if((event.ctrlKey && event.key === 'y') || (event.ctrlKey && event.key === 'Y')) {
+    //             if (store.storeTps.hasTransactionToRedo() && (!store.getModalState())) {
+    //                 store.redo()
+    //             }
+    //         }
+    //   });
 
     return (
         <div id="playlist-cards">
