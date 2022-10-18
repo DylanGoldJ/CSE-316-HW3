@@ -29,6 +29,7 @@ export const GlobalStoreActionType = {
     NEW_SONG_FOR_EDIT:"NEW_SONG_FOR_EDIT",
     SET_MODAL_ACTIVE:"SET_MODAL_ACTIVE",
     SET_MOVING_STATES: "SET_MOVING_STATES",
+    UNMARK_ALL: "UNMARK_ALL"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -66,8 +67,8 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     markDeletePlaylist: store.markDeletePlaylist,
-                    markedDeleteSong: store.markedDeleteSong,
-                    markedEditSong: store.markedEditSong,
+                    markedDeleteSong: null,
+                    markedEditSong: null,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
                     modalActive: store.modalActive,
@@ -84,8 +85,8 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     markDeletePlaylist: store.markDeletePlaylist,
-                    markedDeleteSong: store.markedDeleteSong,
-                    markedEditSong: store.markedEditSong,
+                    markedDeleteSong: null,
+                    markedEditSong: null,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
                     modalActive: store.modalActive,
@@ -101,8 +102,8 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter + 1,
                     listNameActive: false,
                     markDeletePlaylist: store.markDeletePlaylist,
-                    markedDeleteSong: store.markedDeleteSong,
-                    markedEditSong: store.markedEditSong,
+                    markedDeleteSong: null,
+                    markedEditSong: null,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
                     modalActive: store.modalActive,
@@ -118,8 +119,8 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     markDeletePlaylist: store.markDeletePlaylist,
-                    markedDeleteSong: store.markedDeleteSong,
-                    markedEditSong: store.markedEditSong,
+                    markedDeleteSong: null,
+                    markedEditSong: null,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
                     modalActive: store.modalActive,
@@ -135,8 +136,8 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     markDeletePlaylist: payload,
-                    markedDeleteSong: store.markedDeleteSong,
-                    markedEditSong: store.markedEditSong,
+                    markedDeleteSong: null,
+                    markedEditSong: null,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
                     modalActive: store.modalActive,
@@ -152,8 +153,8 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     markDeletePlaylist: store.markDeletePlaylist,
-                    markedDeleteSong: store.markedDeleteSong,
-                    markedEditSong: store.markedEditSong,
+                    markedDeleteSong: null,
+                    markedEditSong: null,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
                     modalActive: store.modalActive,
@@ -169,8 +170,8 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     listNameActive: true,
                     markDeletePlaylist: store.markDeletePlaylist,
-                    markedDeleteSong: store.markedDeleteSong,
-                    markedEditSong: store.markedEditSong,
+                    markedDeleteSong: null,
+                    markedEditSong: null,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
                     modalActive: store.modalActive,
@@ -237,8 +238,8 @@ export const useGlobalStore = () => {
                     listNameActive: store.listNameActive,
                     markDeletePlaylist: store.markDeletePlaylist,
                     markedDeleteSong: store.markedDeleteSong,
-                    markedEditSong: store.markedEditSong,
-                    newSongForEdit: store.newSongForEdit,
+                    markedEditSong: null,
+                    newSongForEdit: null,
                     storeTps : store.storeTps,
                     modalActive: payload,
                     isDragging: store.isDragging,
@@ -252,13 +253,29 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     listNameActive: store.listNameActive,
                     markDeletePlaylist: store.markDeletePlaylist,
-                    markedDeleteSong: store.markedDeleteSong,
-                    markedEditSong: store.markedEditSong,
+                    markedDeleteSong: null,
+                    markedEditSong: null,
                     newSongForEdit: store.newSongForEdit,
                     storeTps : store.storeTps,
                     modalActive: store.modalActive,
                     isDragging: payload.isDrag,
                     draggedTo: payload.dragTo
+                });
+            }
+            case GlobalStoreActionType.UNMARK_ALL: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    markDeletePlaylist: store.markDeletePlaylist,
+                    markedDeleteSong: null,
+                    markedEditSong: null,
+                    newSongForEdit: store.newSongForEdit,
+                    storeTps : store.storeTps,
+                    modalActive: store.modalActive,
+                    isDragging: store.isDragging,
+                    draggedTo: store.draggedTo
                 });
             }
 
@@ -405,6 +422,7 @@ export const useGlobalStore = () => {
 
     store.deleteModalCancel = function(){
         store.hideDeleteModal()
+        store.modalSetUnactive()
     }
     //DELETING MARKED SONG
     store.deleteModalConfirm = function(){
@@ -414,10 +432,6 @@ export const useGlobalStore = () => {
 
             let response = await api.deletePlaylist(id);
             if (response.data.success){
-                // storeReducer({
-                //     type: GlobalStoreActionType.Cx,
-                //     payload: response.data.playlist
-                // });
             }
             store.loadIdNamePairs()
         }
@@ -507,7 +521,6 @@ export const useGlobalStore = () => {
         
         store.changeSongs(playlist._id, playlist.songs)
 
-        store.hideDeleteSongModal()
         return deletedSong; //Return deleted song
         
     }
@@ -525,6 +538,7 @@ export const useGlobalStore = () => {
 
     store.deleteSongModalCancel = function(){
         store.hideDeleteSongModal()
+        store.modalSetUnactive()
     }
 
     store.deleteSongModalConfirm = function(){
@@ -573,6 +587,7 @@ export const useGlobalStore = () => {
 
     store.EditSongModalCancel = function(){
         store.hideEditSongModal()
+        store.modalSetUnactive()
     }
 
     store.EditSongModalConfirm = function(newSong){
@@ -601,17 +616,20 @@ export const useGlobalStore = () => {
     //TODO TOGGLEMODALOFF - DELETE
     }
 
-    store.modalSetActive = function(){
-        storeReducer({
-            type: GlobalStoreActionType.SET_MODAL_ACTIVE,
-            payload: true
-        });
-    }
     store.modalSetUnactive = function(){
         storeReducer({
-            type: GlobalStoreActionType.SET_MODAL_ACTIVE,
+            type: GlobalStoreActionType.UNMARK_ALL,
             payload: false
         });
+    }
+
+    store.getModalState = function(){
+        if((store.markedEditSong !== null) || (store.markedDeleteSong !== null)){//If either modal is not null(modal is up)
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     //This takes a new song array and changes it in the database.
