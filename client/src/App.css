@@ -225,7 +225,7 @@ input {
   grid-template-columns: 30% 65%;
   grid-template-rows: 33% 33% 33%;
   gap: 10px 20px;
-  font-size: 48pt;
+  font-size: 30pt;
 }
 
 span {
@@ -252,7 +252,7 @@ span {
 }
 
 .modal-textfield {
-  font-size:28pt;
+  font-size:24pt;
 }
 
 .modal-button {
