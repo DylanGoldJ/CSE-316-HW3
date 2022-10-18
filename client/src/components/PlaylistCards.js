@@ -15,13 +15,13 @@ function PlaylistCards() {
 
     const handleKeyPress = useCallback((event) => {
         if ((event.ctrlKey && event.key === 'z') || (event.ctrlKey && event.key === 'Z') ) {
-            if(store.storeTps.hasTransactionToUndo() && (!store.getModalState())) {
+            if(store.storeTps.hasTransactionToUndo() && (!store.modalIsVisible())) {
                 store.undo()
             }
         }
 
             if((event.ctrlKey && event.key === 'y') || (event.ctrlKey && event.key === 'Y')) {
-                if (store.storeTps.hasTransactionToRedo() && (!store.getModalState())) {
+                if (store.storeTps.hasTransactionToRedo() && (!store.modalIsVisible())) {
                     store.redo()
                 }
             }

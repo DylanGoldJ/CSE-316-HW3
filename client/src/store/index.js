@@ -634,6 +634,13 @@ export const useGlobalStore = () => {
         }
     }
 
+    store.modalIsVisible = function(){
+        if(document.getElementById("edit-song-modal").classList.contains("is-visible") || document.getElementById("delete-song-modal").classList.contains("is-visible")){
+            return true
+        }
+        return false
+    }
+
     //This takes a new song array and changes it in the database.
     store.changeSongs = function (id, songsArr) {
             // GET THE LIST
