@@ -306,7 +306,7 @@ export const useGlobalStore = () => {
                                     type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                     payload: {
                                         idNamePairs: pairsArray,
-                                        playlist: playlist
+                                        playlist: null
                                     }
                                 });
                             }
@@ -559,15 +559,11 @@ export const useGlobalStore = () => {
     store.showDeleteSongModal = function() {
         let modal = document.getElementById("delete-song-modal")
         modal.classList.add("is-visible")
-        //store.modalSetActive()
-    //TODO TOGGLEMODALON - DELETE
     }
 
     store.hideDeleteSongModal = function() {
         let modal = document.getElementById("delete-song-modal")
         modal.classList.remove("is-visible")
-        //store.modalSetUnactive()
-    //TODO TOGGLEMODALOFF - DELETE
     }
 
     //EDIT
@@ -615,15 +611,11 @@ export const useGlobalStore = () => {
 
         let modal = document.getElementById("edit-song-modal")
         modal.classList.add("is-visible")
-        //store.modalSetActive()
-    //TODO TOGGLEMODALON - DELETE
     }
 
     store.hideEditSongModal = function() {
         let modal = document.getElementById("edit-song-modal")
         modal.classList.remove("is-visible")
-        //store.modalSetUnactive()
-    //TODO TOGGLEMODALOFF - DELETE
     }
 
     store.modalSetUnactive = function(){
