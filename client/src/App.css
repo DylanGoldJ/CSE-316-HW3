@@ -23,7 +23,7 @@ body {
 
 #root {
   background-color: var(--swatch-primary);
-  font-family: "Lexend Exa";
+  font-family: "Tangerine";
   position: absolute;
   width: 80%;
   left: 10%;
@@ -49,7 +49,7 @@ body {
   background-image: linear-gradient(to bottom,         
   #b8b808, #636723);
   color: white;
-  font-size: 48pt;
+  font-size: 70pt;
   border-color: black;
   border-width: 2px;
   border-style: solid;
@@ -82,12 +82,12 @@ body {
   display:grid;
 }
 #playlist-selector-heading{
-  font-size:36pt;
+  font-size:56pt;
   text-align: left;
 }
 
 .playlister-button, .playlister-button-disabled {
-  font-size:36pt;
+  font-size:50pt;
   border-width: 1px;
   border-color: black;
   border-style: solid;
@@ -115,7 +115,7 @@ body {
   display:flex;
   align-items: center;
   justify-content: center;
-  font-size: 36pt;
+  font-size: 56pt;
 }
 
 #add-list-button {
@@ -124,7 +124,7 @@ body {
 }
 
 .list-card, .selected-list-card, .unselected-list-card {
-  font-size: 18pt;
+  font-size: 38pt;
   margin: 10px;
   padding: 20px;
   border-radius: 25px;
