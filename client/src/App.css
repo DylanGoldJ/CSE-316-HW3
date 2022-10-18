@@ -61,6 +61,7 @@ body {
   grid-row: 1 / 2;
   background-color: transparent;
   float:right;
+  display:flex
 }
 
 #playlist-selector, #playlist-cards {
