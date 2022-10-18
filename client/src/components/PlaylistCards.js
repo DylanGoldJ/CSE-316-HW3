@@ -37,21 +37,6 @@ function PlaylistCards() {
         };
       }, [handleKeyPress]);
 
-
-    // document.addEventListener('keydown', function(event) {
-    //     if ((event.ctrlKey && event.key === 'z') || (event.ctrlKey && event.key === 'Z') ) {
-    //         if(store.storeTps.hasTransactionToUndo() && (!store.getModalState())) {
-    //             store.undo()
-    //         }
-    //     }
-
-    //         if((event.ctrlKey && event.key === 'y') || (event.ctrlKey && event.key === 'Y')) {
-    //             if (store.storeTps.hasTransactionToRedo() && (!store.getModalState())) {
-    //                 store.redo()
-    //             }
-    //         }
-    //   });
-
     return (
         <div id="playlist-cards">
         {
