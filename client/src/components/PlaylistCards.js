@@ -1,4 +1,4 @@
-import { useContext, useCallback, useEffect } from 'react'
+import { useContext, useCallback, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import SongCard from './SongCard.js'
 import { GlobalStoreContext } from '../store'
@@ -8,7 +8,7 @@ import { GlobalStoreContext } from '../store'
     
     @author McKilla Gorilla
 */
-function PlaylistCards() {
+function PlaylistCards(props) {
     const { store } = useContext(GlobalStoreContext);
     store.history = useHistory();
 
@@ -37,9 +37,19 @@ function PlaylistCards() {
         };
       }, [handleKeyPress]);
 
+    const [state, setState] = useState({
+        reqCurrentList: false,
+    });
+
+    if (store.currentList == null && !state.reqCurrentList) {
+        store.setCurrentList(props.match.params.id);
+        setState({reqCurrentList: true });
+    }
+
     return (
         <div id="playlist-cards">
         {
+            store.currentList != null ?(
             store.currentList.songs.map((song, index) => (
                 <SongCard
                     id={'playlist-song-' + (index)}
@@ -48,6 +58,8 @@ function PlaylistCards() {
                     song={song}
                 />
             ))
+        )  
+            :(<div />)
         }
         </div>
     )
