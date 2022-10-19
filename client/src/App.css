@@ -119,8 +119,8 @@ body {
 }
 
 #add-list-button {
-  float:right;
-  text-align: right;
+  float:left;
+  text-align: left;
 }
 
 .list-card, .selected-list-card, .unselected-list-card {
