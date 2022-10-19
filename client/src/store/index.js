@@ -506,9 +506,12 @@ export const useGlobalStore = () => {
     store.moveSong = function(start, end) {
         let list = store.currentList;
         let tempSong = list.songs[start]
-        list.songs[start] = list.songs[end]
-        list.songs[end] = tempSong
+        list.songs.splice(start, 1);
+        list.songs.splice(end, 0, tempSong)
         store.changeSongs(list._id, list.songs)
+         // WE NEED TO UPDATE THE STATE FOR THE APP
+
+
     }
 
     //DELETING SONG:
