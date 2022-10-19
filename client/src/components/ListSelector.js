@@ -20,6 +20,12 @@ const ListSelector = () => {
         store.createNewList();
     }
     let listCard = "";
+    let listButtonClass = "playlister-button"
+    let activeButtonX = store.listNameActive
+        if (activeButtonX) {
+            listButtonClass += "-disabled"
+        }
+
     if (store) {
         listCard = store.idNamePairs.map((pair) => (
             <ListCard
@@ -38,7 +44,8 @@ const ListSelector = () => {
                     type="button"
                     id="add-list-button"
                     onClick={handleCreateNewList}
-                    className="playlister-button"
+                    className={listButtonClass}
+                    disabled={activeButtonX}
                     value="+" />
                     Your Lists
             </div>                {
